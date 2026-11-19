@@ -6,17 +6,17 @@ import { idSchema } from "../../lib/schemas.js";
 
 // Favorite HTTP handlers: request → service → response.
 export const favoriteHandlers = {
-  getFavorites: async (req: Request, res: Response, port: number) => {
+  getFavorites: async (req: Request, res: Response) => {
     const userId = String(req.params.userId);
     const meals = await favoriteService.getFavorites(userId);
     res.json({
       success: true,
       count: meals.length,
-      data: { meals: meals.map((m) => toMealResponse(port, m as any)) },
+      data: { meals: meals.map((m) => toMealResponse(m as any)) },
     });
   },
 
-  addFavorite: async (req: Request, res: Response, port: number) => {
+  addFavorite: async (req: Request, res: Response) => {
     const userId = String(req.params.userId);
     const parsed = idSchema.safeParse(req.body);
     if (!parsed.success) {
@@ -24,7 +24,7 @@ export const favoriteHandlers = {
       return;
     }
     const { mealId } = parsed.data;
-    const meal = await favoriteService.addFavorite(userId, mealId, port);
+    const meal = await favoriteService.addFavorite(userId, mealId);
     if (!meal) {
       res.status(404).json({ success: false, message: "ไม่พบผู้ใช้หรือเมนูอาหาร" });
       return;
