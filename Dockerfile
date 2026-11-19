@@ -44,6 +44,8 @@ ENV NODE_ENV=production
 # Expose application port (adjust if your server uses a different port)
 EXPOSE 3000
 
-# Run migrations, seed database, then start the server.
-# Requires DATABASE_URL and DIRECT_URL set as Render environment variables.
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run seed && node dist/server.js"]
+# Run migrations and seed, then start the server.
+# Migrations and seed are non-fatal so the server starts even if they need
+# manual intervention (e.g. baselining an existing database). Check Render
+# logs for migration/seed output. Requires DATABASE_URL and DIRECT_URL.
+CMD ["sh", "-c", "(npx prisma migrate deploy || true) && (npm run seed || true) && node dist/server.js"]
