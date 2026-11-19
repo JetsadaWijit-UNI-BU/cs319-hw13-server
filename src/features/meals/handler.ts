@@ -6,27 +6,27 @@ import { mealSchema } from "./schemas.js";
 
 // Meal HTTP handlers: request → service → response. One responsibility per handler.
 export const mealHandlers = {
-  getMeals: async (req: Request, res: Response, port: number) => {
+  getMeals: async (req: Request, res: Response) => {
     const { q } = req.query as { q?: string };
     const meals = await mealService.getMeals(q);
     res.json({
       success: true,
       count: meals.length,
-      data: { meals: meals.map((m) => toMealResponse(port, m as any)) },
+      data: { meals: meals.map((m) => toMealResponse(m as any)) },
     });
   },
 
-  getMealById: async (req: Request, res: Response, port: number) => {
+  getMealById: async (req: Request, res: Response) => {
     const id = String(req.params.id);
     const meal = await mealService.getMealById(id);
     if (!meal) {
       res.status(404).json({ success: false, message: "ไม่พบเมนูอาหารนี้" });
       return;
     }
-    res.json({ success: true, data: { meals: [toMealResponse(port, meal as any)] } });
+    res.json({ success: true, data: { meals: [toMealResponse(meal as any)] } });
   },
 
-  createMeal: async (req: Request, res: Response, port: number) => {
+  createMeal: async (req: Request, res: Response) => {
     const parsed = mealSchema.safeParse(req.body);
     if (!parsed.success) {
       res.status(400).json({ success: false, message: parsed.error.issues[0]?.message ?? "ข้อมูลไม่ถูกต้อง" });
@@ -48,11 +48,11 @@ export const mealHandlers = {
     res.status(201).json({
       success: true,
       message: "สร้างเมนูอาหารสำเร็จ",
-      data: toMealResponse(port, meal as any),
+      data: toMealResponse(meal as any),
     });
   },
 
-  updateMeal: async (req: Request, res: Response, port: number) => {
+  updateMeal: async (req: Request, res: Response) => {
     const parsed = mealSchema.safeParse(req.body);
     if (!parsed.success) {
       res.status(400).json({ success: false, message: parsed.error.issues[0]?.message ?? "ข้อมูลไม่ถูกต้อง" });
@@ -79,11 +79,11 @@ export const mealHandlers = {
     res.json({
       success: true,
       message: "อัปเดตเมนูอาหารเรียบร้อย",
-      data: toMealResponse(port, meal as any),
+      data: toMealResponse(meal as any),
     });
   },
 
-  deleteMeal: async (req: Request, res: Response, port: number) => {
+  deleteMeal: async (req: Request, res: Response) => {
     const id = String(req.params.id);
     const title = await mealService.deleteMeal(id);
     if (!title) {

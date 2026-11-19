@@ -8,13 +8,13 @@ export const favoriteService = {
     return favs.map((f) => f.meal);
   },
 
-  addFavorite: async (userId: string, mealId: string, port: number) => {
+  addFavorite: async (userId: string, mealId: string) => {
     const [user, meal] = await favoriteStore.findUserAndMeal(userId, mealId);
     if (!user || !meal) return null;
     const existing = await favoriteStore.findFirst(userId, mealId);
-    if (existing) return toMealResponse(port, existing.meal as any);
+    if (existing) return toMealResponse(existing.meal as any);
     const fav = await favoriteStore.create(userId, mealId);
-    return toMealResponse(port, fav.meal as any);
+    return toMealResponse(fav.meal as any);
   },
 
   removeFavorite: async (userId: string, mealId: string) => {
