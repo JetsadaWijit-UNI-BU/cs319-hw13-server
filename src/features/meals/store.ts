@@ -1,17 +1,22 @@
+import type { Prisma } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 
 // Meal data access: Prisma effects only. No business logic, no HTTP.
 export const mealStore = {
-  findMany: (where: unknown, include: unknown, orderBy: unknown) =>
+  findMany: (
+    where: Prisma.MealWhereInput,
+    include: Prisma.MealInclude,
+    orderBy: Prisma.MealOrderByWithRelationInput
+  ) =>
     prisma.meal.findMany({ where, include, orderBy }),
 
-  findUnique: (id: string, include: unknown) =>
-    prisma.meal.findUnique({ where: { id }, include }),
+  findUnique: (id: string, include?: Prisma.MealInclude) =>
+    prisma.meal.findUnique({ where: { id }, ...(include ? { include } : {}) }),
 
-  create: (data: unknown, include: unknown) =>
+  create: (data: Prisma.MealCreateInput, include: Prisma.MealInclude) =>
     prisma.meal.create({ data, include }),
 
-  update: (id: string, data: unknown, include: unknown) =>
+  update: (id: string, data: Prisma.MealUpdateInput, include: Prisma.MealInclude) =>
     prisma.meal.update({ where: { id }, data, include }),
 
   delete: (id: string) =>

@@ -32,7 +32,19 @@ export const mealHandlers = {
       res.status(400).json({ success: false, message: parsed.error.issues[0]?.message ?? "ข้อมูลไม่ถูกต้อง" });
       return;
     }
-    const meal = await mealService.createMeal(parsed.data);
+    const data = {
+      title: parsed.data.title,
+      category: parsed.data.category ?? null,
+      area: parsed.data.area ?? null,
+      instructions: parsed.data.instructions,
+      thumbnail: parsed.data.thumbnail ?? "",
+      youtube: parsed.data.youtube ?? null,
+      ingredients: parsed.data.ingredients.map((i) => ({
+        name: i.name,
+        measure: i.measure ?? null,
+      })),
+    };
+    const meal = await mealService.createMeal(data);
     res.status(201).json({
       success: true,
       message: "สร้างเมนูอาหารสำเร็จ",
@@ -47,7 +59,19 @@ export const mealHandlers = {
       return;
     }
     const id = String(req.params.id);
-    const meal = await mealService.updateMeal(id, parsed.data);
+    const data = {
+      title: parsed.data.title,
+      category: parsed.data.category ?? null,
+      area: parsed.data.area ?? null,
+      instructions: parsed.data.instructions,
+      thumbnail: parsed.data.thumbnail ?? "",
+      youtube: parsed.data.youtube ?? null,
+      ingredients: parsed.data.ingredients.map((i) => ({
+        name: i.name,
+        measure: i.measure ?? null,
+      })),
+    };
+    const meal = await mealService.updateMeal(id, data);
     if (!meal) {
       res.status(404).json({ success: false, message: "ไม่พบเมนูอาหารนี้" });
       return;
