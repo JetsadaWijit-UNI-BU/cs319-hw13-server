@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================================
+// Gusto Backend — Recipe Hub database
+// Custom database for the CS319 full-stack CRUD assignment (Mini Project 2).
+// Replaces TheMealDB API with our own data stored via Prisma ORM.
+// ============================================================================
+
+model User {
+  id           String             @id @default(cuid())
+  email        String             @unique
+  password     String // simple auth (unencrypted, allowed for this homework)
+  name         String?
+  favorites    Favorite[]
+  shoppingList ShoppingListItem[]
+  createdAt    DateTime           @default(now())
+}
+
+model Meal {
+  id             String             @id @default(cuid())
+  title          String
+  category       String?
+  area           String?
+  instructions   String
+  thumbnail      String
+  youtube        String?
+  ingredients    Ingredient[]
+  favoritedBy    Favorite[]
+  inShoppingList ShoppingListItem[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+}
+
+model Ingredient {
+  id      String  @id @default(cuid())
+  name    String
+  measure String?
+  meal    Meal    @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  mealId  String
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  mealId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meal      Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, mealId])
+}
+
+model ShoppingListItem {
+  id             String   @id @default(cuid())
+  userId         String
+  mealId         String
+  ingredientName String
+  measure        String?
+  checked        Boolean  @default(false)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meal           Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+
+  @@unique([userId, mealId, ingredientName])
+}
