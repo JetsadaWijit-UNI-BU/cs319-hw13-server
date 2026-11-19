@@ -24,12 +24,12 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Copy package files and Prisma schema/config BEFORE npm ci --omit=dev
+# Copy package files and Prisma schema/config BEFORE npm ci
 COPY package.json package-lock.json prisma7.config.ts ./
 COPY prisma/schema.prisma ./prisma/
 
-# Install production dependencies only and generate Prisma client
-RUN npm ci --omit=dev
+# Install all dependencies (prisma CLI and tsx are needed at runtime for migrations/seed)
+RUN npm ci
 
 # Copy remaining Prisma files (migrations, seed, meals.json)
 COPY prisma ./prisma/
@@ -44,5 +44,6 @@ ENV NODE_ENV=production
 # Expose application port (adjust if your server uses a different port)
 EXPOSE 3000
 
-# Start the server
-CMD ["node", "dist/server.js"]
+# Run migrations, seed database, then start the server.
+# Requires DATABASE_URL and DIRECT_URL set as Render environment variables.
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run seed && node dist/server.js"]
