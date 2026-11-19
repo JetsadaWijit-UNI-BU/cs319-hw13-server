@@ -12,3 +12,8 @@ prisma/pglite.log
 
 # Build output
 dist
+
+# TypeScript emit (tsc has no outDir, so files land next to sources)
+*.js
+*.d.ts
+*.map
