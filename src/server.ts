@@ -28,6 +28,47 @@ app.use("/api/users/:userId/favorites", createFavoritesRouter(PORT));
 app.use("/api/users/:userId/shopping-list", createShoppingListRouter());
 app.use("/api/users", createUsersRouter());
 
+// Root welcome page.
+app.get("/", (_req, res) => {
+  res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gusto Backend</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1f2937;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+      padding: 48px 64px;
+      text-align: center;
+      max-width: 480px;
+      width: 90%;
+    }
+    h1 { font-size: 2rem; margin-bottom: 8px; letter-spacing: -0.5px; }
+    p { color: #6b7280; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>This is server</h1>
+    <p>Gusto Backend — Recipe Hub API</p>
+  </div>
+</body>
+</html>`);
+});
+
 // เริ่มทำงาน Server
 app.listen(PORT, () => {
   console.log(`🚀 Gusto Backend running on http://localhost:${PORT}`);
